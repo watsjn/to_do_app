@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
-import SignIn from '../components/signIn/SignIn';
+import SignInRoute from './SignInRoute';
 
 const MainRouter: React.FC = () => (
   <Switch>
     <Route
       path="/signin"
       exact
-      component={SignIn}
+      component={SignInRoute}
     />
     <PrivateRoute
       path="/"

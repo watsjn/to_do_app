@@ -1,7 +1,6 @@
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -13,24 +12,6 @@ import {
   makeStyles,
   Theme,
 } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-
-const Copyright: React.FC = () => {
-  return (
-    <Typography
-      variant="body2"
-      color="textSecondary"
-      align="center"
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-};
 
 const useStyles = makeStyles((theme: Theme) => ({
   '@global': {
