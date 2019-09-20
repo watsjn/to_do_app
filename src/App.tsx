@@ -26,10 +26,9 @@ const Copyright: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  const [
-    isAuthorized,
-    setIsAuthorized,
-  ] = useState<boolean>(false);
+  const [isAuthorized, setIsAuthorized] = useState<boolean>(
+    false,
+  );
 
   return (
     <AuthContext.Provider
