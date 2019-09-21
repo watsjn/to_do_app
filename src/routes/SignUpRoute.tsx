@@ -1,14 +1,16 @@
-import React from 'react';
-import AuthContext from '../AuthContext';
+import React, { useContext } from 'react';
+import UserContext from '../context/user.context';
 import { Redirect } from 'react-router-dom';
 import SignUp from '../components/signUp/SignUp';
 
-const SignUpRoute: React.FC = () => (
-  <AuthContext.Consumer>
-    {({ isAuthorized }) =>
-      isAuthorized ? <Redirect to="/" /> : <SignUp />
-    }
-  </AuthContext.Consumer>
-);
+const SignUpRoute: React.FC = () => {
+  const { user } = useContext(UserContext);
+
+  return user && user.email ? (
+    <Redirect to="/" />
+  ) : (
+    <SignUp />
+  );
+};
 
 export default SignUpRoute;
