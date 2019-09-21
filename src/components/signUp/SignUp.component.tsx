@@ -1,4 +1,8 @@
-import React from 'react';
+import React, {
+  useState,
+  useEffect,
+  useContext,
+} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -7,6 +11,9 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { green } from '@material-ui/core/colors';
+import UserContext from '../../context/user.context';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -31,16 +38,51 @@ const useStyles = makeStyles(theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  wrapper: {
+    // margin: theme.spacing(1),
+    position: 'relative',
+  },
+  progress: {
+    color: green[500],
+    position: 'absolute',
+    top: 0.1,
+    left: 0,
+    zIndex: 1,
+  },
 }));
 
 export default function SignUp() {
   const classes = useStyles();
 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const { signUpUser } = useContext(UserContext);
+
+  const submitHandler = (e: any) => {
+    e.preventDefault();
+    if (signUpUser) {
+      let res = signUpUser({
+        email: email,
+        password: password,
+      });
+      console.log(res);
+    }
+    return e;
+  };
+
   return (
     <div className={classes.paper}>
-      <Avatar className={classes.avatar}>
-        <LockOutlinedIcon />
-      </Avatar>
+      <div className={classes.wrapper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <CircularProgress
+          size={55}
+          className={classes.progress}
+        />
+      </div>
+
       <Typography component="h1" variant="h5">
         Sign up
       </Typography>
@@ -55,6 +97,8 @@ export default function SignUp() {
               label="Email Address"
               name="email"
               autoComplete="email"
+              onChange={e => setEmail(e.target.value)}
+              value={email}
             />
           </Grid>
           <Grid item xs={12}>
@@ -67,6 +111,8 @@ export default function SignUp() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={e => setPassword(e.target.value)}
+              value={password}
             />
           </Grid>
         </Grid>
@@ -76,6 +122,7 @@ export default function SignUp() {
           variant="contained"
           color="primary"
           className={classes.submit}
+          onClick={submitHandler}
         >
           Sign Up
         </Button>
