@@ -52,6 +52,7 @@ const SignIn: React.FC = () => {
       </Typography>
       <form className={classes.form} noValidate>
         <TextField
+          autoFocus
           variant="outlined"
           margin="normal"
           required
@@ -60,7 +61,6 @@ const SignIn: React.FC = () => {
           label="Email Address"
           name="email"
           autoComplete="email"
-          autoFocus
         />
         <TextField
           variant="outlined"

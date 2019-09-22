@@ -6,30 +6,22 @@ import { UserInterface } from '../../interfaces/UserInterface';
 
 const UserProvider: React.FC = ({ children }) => {
   const setUser = (user: UserInterface) => {
-    setUserDetails((prevState: UserContextProps) => {
-      return { user, ...prevState };
-    });
+    localStorage.setItem('user', JSON.stringify(user));
+    setUserDetails({ user: user });
   };
 
-  const signUpUser = (user: object): void | object => {
-    fetch('http://localhost:3001/api/signup', {
-      method: 'POST',
-      cache: 'no-cache',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(user),
-    })
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.log(error));
-  };
+  const savedUser = localStorage.getItem('user');
 
   const userState: UserContextProps = {
-    user: { email: '', token: '' },
+    user: savedUser
+      ? JSON.parse(savedUser)
+      : { email: '', token: '' },
     setUser,
-    signUpUser,
   };
 
-  const [userDetails, setUserDetails] = useState(userState);
+  const [userDetails, setUserDetails] = useState<any>(
+    userState,
+  );
 
   return (
     <UserContext.Provider value={userDetails}>

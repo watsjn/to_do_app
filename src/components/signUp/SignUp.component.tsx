@@ -1,8 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-} from 'react';
+import React, { useContext, useRef } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -13,7 +9,10 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { green } from '@material-ui/core/colors';
+import useAxios from 'axios-hooks';
+import apiConfig from '../../config/api.config';
 import UserContext from '../../context/user.context';
+import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -54,22 +53,55 @@ const useStyles = makeStyles(theme => ({
 export default function SignUp() {
   const classes = useStyles();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { setUser } = useContext<any>(UserContext);
 
-  const { signUpUser } = useContext(UserContext);
+  const emailRef = useRef<any>(null);
+  const passwordRef = useRef<any>(null);
+
+  const errors: any = {};
+
+  const [
+    {
+      data: postData,
+      loading: postLoading,
+      error: postError,
+      response: postResponse,
+    },
+    executePost,
+  ] = useAxios(
+    {
+      url: `${apiConfig.url}/api/auth/signup`,
+      method: 'POST',
+    },
+    { manual: true },
+  );
 
   const submitHandler = (e: any) => {
     e.preventDefault();
-    if (signUpUser) {
-      let res = signUpUser({
-        email: email,
-        password: password,
-      });
-      console.log(res);
-    }
+    executePost({
+      data: {
+        email: emailRef.current.value,
+        password: passwordRef.current.value,
+      },
+    });
     return e;
   };
+
+  if (postError && postError.response) {
+    if (postError.response.data.statusCode === 400) {
+      postError.response.data.message.forEach(
+        (element: any) => {
+          errors[element.property] = element;
+        },
+      );
+    }
+  } else if (postData) {
+    if (postData.token) {
+      setUser(postData);
+    } else {
+      return <Redirect to={'/signin'} />;
+    }
+  }
 
   return (
     <div className={classes.paper}>
@@ -77,10 +109,12 @@ export default function SignUp() {
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
-        <CircularProgress
-          size={52}
-          className={classes.progress}
-        />
+        {postLoading && (
+          <CircularProgress
+            size={52}
+            className={classes.progress}
+          />
+        )}
       </div>
 
       <Typography component="h1" variant="h5">
@@ -90,20 +124,22 @@ export default function SignUp() {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
+              autoFocus
               variant="outlined"
+              error={!!errors.email}
               required
               fullWidth
               id="email"
               label="Email Address"
               name="email"
               autoComplete="email"
-              onChange={e => setEmail(e.target.value)}
-              value={email}
+              inputRef={emailRef}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               variant="outlined"
+              error={!!errors.password}
               required
               fullWidth
               name="password"
@@ -111,12 +147,12 @@ export default function SignUp() {
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={e => setPassword(e.target.value)}
-              value={password}
+              inputRef={passwordRef}
             />
           </Grid>
         </Grid>
         <Button
+          disabled={!!postLoading}
           type="submit"
           fullWidth
           variant="contained"
