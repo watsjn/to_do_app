@@ -45,8 +45,8 @@ const useStyles = makeStyles(theme => ({
   progress: {
     color: green[500],
     position: 'absolute',
-    top: 0.1,
-    left: 0,
+    top: 2,
+    left: 2,
     zIndex: 1,
   },
 }));
@@ -78,7 +78,7 @@ export default function SignUp() {
           <LockOutlinedIcon />
         </Avatar>
         <CircularProgress
-          size={55}
+          size={52}
           className={classes.progress}
         />
       </div>
